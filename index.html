@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual-Mode Control Vehicle Project</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom scrollbar for aesthetics (Using the light blue accent) */
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+        body::-webkit-scrollbar-thumb {
+            background-color: #89CFF0; /* Light Blue Accent */
+            border-radius: 4px;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Deep Navy Background */
+            background-color: #0A192F; 
+            color: #CCD6F6; /* Light Text */
+            height: 100vh; /* Enforce full viewport height */
+            overflow: hidden; /* Prevent main page scroll */
+        }
+        /* Custom configuration for Tailwind colors */
+        .panel-bg {
+            background-color: #102A43; /* Slightly Lighter Navy */
+        }
+        .accent-blue {
+            color: #89CFF0; /* Light Blue Accent */
+        }
+        .accent-border {
+            border-color: #89CFF0;
+        }
+        /* Style for the code block: Must be scrollable within its container */
+        .code-block {
+            background-color: #0A192F; /* Deep navy for code background */
+            color: #CCD6F6; /* Light text for code */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            overflow-y: auto; /* Internal vertical scrolling */
+            /* max-height is managed by flex-grow in the container */
+        }
+        .active-tab {
+            border-bottom-width: 2px;
+        }
+        
+        /* Make the table container scrollable */
+        .table-container {
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="h-screen overflow-hidden">
+
+    <!-- Main Container: Uses h-full to fit screen. The p-4/lg:p-8 adds a nice border/margin. -->
+    <div class="p-4 lg:p-8 h-full">
+        <div class="flex flex-col lg:flex-row h-full max-w-6xl mx-auto rounded-xl shadow-2xl overflow-hidden panel-bg">
+            
+            <!-- LEFT COLUMN: Media/Visual (Fixed to half the height on mobile, full height on desktop) -->
+            <div class="w-full lg:w-2/5 panel-bg p-8 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-[#0A192F]/50 lg:h-full h-1/2 lg:h-auto">
+                <!-- Image of your robot model (img1) -->
+                <img 
+                    src="img.jpg" 
+                    alt="Image of the Obstacle Avoidance Vehicle Model" 
+                    class="w-full h-auto max-h-full rounded-lg shadow-xl object-contain"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/102A43/89CFF0?text=Error:+Image+file+not+found';this.classList.add('p-10')"
+                />
+            </div>
+
+            <!-- RIGHT COLUMN: Text/Data (Uses flex-col and h-full to manage vertical space) -->
+            <div class="w-full lg:w-3/5 panel-bg p-8 lg:p-12 flex flex-col h-full overflow-hidden">
+                
+                <!-- Project Title (Fixed Height) -->
+                <header class="mb-4">
+                    <p class="text-sm font-medium opacity-70 mb-2 tracking-wider">PROJECT OVERVIEW</p>
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white uppercase leading-tight">
+                        Obstacle-Avoidance & Dual-Mode Control Vehicle
+                    </h1>
+                </header>
+
+                <!-- Navigation/Links (Fixed Height) -->
+                <nav class="pt-4 border-t border-[#0A192F] mb-6">
+                    <div class="flex space-x-8 text-xl sm:text-2xl font-semibold">
+                        <a href="#" id="tab-components-link" class="tab-link accent-blue transition duration-300 pb-1 border-b-2 accent-border" onclick="showTab('components'); return false;">
+                            components
+                        </a>
+                        <a href="#" id="tab-code-link" class="tab-link hover:accent-blue transition duration-300 pb-1 border-b-2 border-transparent hover:accent-border" onclick="showTab('code'); return false;">
+                            code
+                        </a>
+                    </div>
+                </nav>
+
+                <!-- Content Area: Tabs (Takes up remaining vertical space, enabling internal scroll) -->
+                <div id="content-container" class="flex-grow min-h-0 pb-4">
+
+                    <!-- Components Tab Content -->
+                    <div id="components-content" class="tab-content h-full flex flex-col space-y-4">
+                        <h2 class="text-2xl font-semibold accent-blue">Components Required</h2>
+                        <div class="table-container flex-grow min-h-0 overflow-y-auto pr-2">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <!-- Sticky header for when the list scrolls -->
+                                    <tr class="sticky top-0 bg-[#102A43] border-b border-[#0A192F] text-gray-400 shadow-md">
+                                        <th class="py-2 pr-4">Component</th>
+                                        <th class="py-2 pl-4">Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-[#0A192F] hover:bg-[#102A43]/50 transition duration-150">
+                                        <td class="py-2 pr-4 font-medium">ESP32-WROOM / DA module</td>
+                                        <td class="py-2 pl-4">1</td>
+                                    </tr>
+                                    <tr class="border-b border-[#0A192F] hover:bg-[#102A43]/50 transition duration-150">
+                                        <td class="py-2 pr-4 font-medium">L298N Motor Driver</td>
+                                        <td class="py-2 pl-4">1</td>
+                                    </tr>
+                                    <tr class="border-b border-[#0A192F] hover:bg-[#102A43]/50 transition duration-150">
+                                        <td class="py-2 pr-4 font-medium">DC Gear Motors</td>
+                                        <td class="py-2 pl-4">2</td>
+                                    </tr>
+                                    <tr class="border-b border-[#0A192F] hover:bg-[#102A43]/50 transition duration-150">
+                                        <td class="py-2 pr-4 font-medium">Wheels</td>
+                                        <td class="py-2 pl-4">2</td>
+                                    </tr>
+                                    <tr class="border-b border-[#0A192F] hover:bg-[#102A43]/50 transition duration-150">
+                                        <td class="py-2 pr-4 font-medium">Ultrasonic Sensor HC-SR04</td>
+                                        <td class="py-2 pl-4">1</td>
+                                    </tr>
+                                    <tr class="border-b border-[#0A192F] hover:bg-[#102A43]/50 transition duration-150">
+                                        <td class="py-2 pr-4 font-medium">Robot Chassis</td>
+                                        <td class="py-2 pl-4">1</td>
+                                    </tr>
+                                    <tr class="border-b border-[#0A192F] hover:bg-[#102A43]/50 transition duration-150">
+                                        <td class="py-2 pr-4 font-medium">Caster Wheel</td>
+                                        <td class="py-2 pl-4">1</td>
+                                    </tr>
+                                    <tr class="border-b border-[#0A192F] hover:bg-[#102A43]/50 transition duration-150">
+                                        <td class="py-2 pr-4 font-medium">Battery Pack / Li-ion cells</td>
+                                        <td class="py-2 pl-4">1 set</td>
+                                    </tr>
+                                    <tr class="border-b border-[#0A192F] hover:bg-[#102A43]/50 transition duration-150">
+                                        <td class="py-2 pr-4 font-medium">Buck Converter / 7805</td>
+                                        <td class="py-2 pl-4">1</td>
+                                    </tr>
+                                    <tr class="border-b border-[#0A192F] hover:bg-[#102A43]/50 transition duration-150">
+                                        <td class="py-2 pr-4 font-medium">Connecting Wires</td>
+                                        <td class="py-2 pl-4">Many</td>
+                                    </tr>
+                                    <tr class="border-b border-[#0A192F] hover:bg-[#102A43]/50 transition duration-150">
+                                        <td class="py-2 pr-4 font-medium">Switch</td>
+                                        <td class="py-2 pl-4">1</td>
+                                    </tr>
+                                    <tr class="hover:bg-[#102A43]/50 transition duration-150">
+                                        <td class="py-2 pr-4 font-medium">USB Cable</td>
+                                        <td class="py-2 pl-4">1</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Code Tab Content (Initially hidden) -->
+                    <div id="code-content" class="tab-content hidden h-full flex flex-col space-y-4">
+                        <h2 class="text-2xl font-semibold accent-blue">Arduino Code (C++ for ESP32)</h2>
+                        <pre class="code-block flex-grow min-h-0 whitespace-pre-wrap text-sm leading-relaxed"><code class="language-arduino">#include &lt;WiFi.h&gt;
+#include &lt;WebServer.h&gt;
+
+// Wi-Fi credentials
+const char* ssid = "Shrey's iphone";
+const char* password = "Sv1911sv@";
+
+// Create server
+WebServer server(80);
+
+// Motor pins (ESP32 GPIO numbers)
+const int IN1 = 23;
+const int IN2 = 22;
+const int IN3 = 21;
+const int IN4 = 19;
+
+// Ultrasonic sensor pins
+const int trigPin = 18;
+const int echoPin = 5;
+
+bool autoMode = true;
+
+void setup() {
+    Serial.begin(115200);
+
+    // Motor pins
+    pinMode(IN1, OUTPUT);
+    pinMode(IN2, OUTPUT);
+    pinMode(IN3, OUTPUT);
+    pinMode(IN4, OUTPUT);
+
+    // Ultrasonic sensor pins
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+
+    // WiFi connection
+    WiFi.begin(ssid, password);
+    Serial.println("Connecting to WiFi...");
+
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
+
+    Serial.println("\nConnected!");
+    Serial.print("IP Address: ");
+    Serial.println(WiFi.localIP());
+
+    // Routes
+    server.on("/", handleRoot);
+    server.on("/command", handleManual);
+    server.on("/mode", handleModeSwitch);
+
+    server.begin();
+    Serial.println("Server started");
+}
+
+void loop() {
+    server.handleClient();
+
+    if (autoMode) {
+        long duration, distance;
+
+        digitalWrite(trigPin, LOW);
+        delayMicroseconds(2);
+        digitalWrite(trigPin, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(trigPin, LOW);
+
+        duration = pulseIn(echoPin, HIGH);
+        distance = duration * 0.034 / 2;
+
+        if (distance &lt; 20 &amp;&amp; distance &gt; 0) {
+            stopMotors();
+            delay(400);
+            backward();
+            delay(400);
+            right();
+            delay(400);
+        } else {
+            forward();
+        }
+    }
+}
+
+// ---------------- Motor Functions ----------------
+void forward() {
+    digitalWrite(IN1, HIGH);
+    digitalWrite(IN2, LOW);
+    digitalWrite(IN3, HIGH);
+    digitalWrite(IN4, LOW);
+}
+
+void backward() {
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, HIGH);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, HIGH);
+}
+
+void left() {
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, HIGH);
+    digitalWrite(IN3, HIGH);
+    digitalWrite(IN4, LOW);
+}
+
+void right() {
+    digitalWrite(IN1, HIGH);
+    digitalWrite(IN2, LOW);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, HIGH);
+}
+
+void stopMotors() {
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, LOW);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, LOW);
+}
+
+// ---------------- Web Pages ----------------
+void handleRoot() {
+    String page = "&lt;html&gt;&lt;head&gt;&lt;title&gt;ESP32 Robot Control&lt;/title&gt;&lt;/head&gt;&lt;body&gt;";
+    page += "&lt;h1&gt;ESP32 Obstacle Avoiding Robot&lt;/h1&gt;";
+    page += "&lt;p&gt;Current Mode: " + String(autoMode ? "Automatic" : "Manual") + "&lt;/p&gt;";
+
+    page += "&lt;button onclick=\"location.href='/mode?mode=auto'\"&gt;Auto Mode&lt;/button&gt;";
+    page += "&lt;button onclick=\"location.href='/mode?mode=manual'\"&gt;Manual Mode&lt;/button&gt;&lt;br&gt;&lt;br&gt;";
+
+    if (!autoMode) {
+        page += "&lt;button onmousedown=\"sendCommand('forward')\" onmouseup=\"sendCommand('stop')\"&gt;Forward&lt;/button&gt;&lt;br&gt;&lt;br&gt;";
+
+        page += "&lt;button onmousedown=\"sendCommand('left_on')\" onmouseup=\"sendCommand('left_off')\"&gt;Left&lt;/button&gt;";
+        page += "&lt;button onclick=\"sendCommand('stop')\"&gt;Stop&lt;/button&gt;";
+        page += "&lt;button onmousedown=\"sendCommand('right_on')\" onmouseup=\"sendCommand('right_off')\"&gt;Right&lt;/button&gt;&lt;br&gt;&lt;br&gt;";
+
+        page += "&lt;button onmousedown=\"sendCommand('backward')\" onmouseup=\"sendCommand('stop')\"&gt;Backward&lt;/button&gt;";
+
+        page += "&lt;script&gt;";
+        page += "function sendCommand(cmd){";
+        page += " var x=new XMLHttpRequest();";
+        page += " x.open('GET','/command?command='+cmd,true);";
+        page += " x.send();}";
+        page += "&lt;/script&gt;";
+    }
+
+    page += "&lt;/body&gt;&lt;/html&gt;";
+    server.send(200, "text/html", page);
+}
+
+// ---------------- Manual Control ----------------
+void handleManual() {
+    String cmd = server.arg("command");
+
+    if (cmd == "forward") forward();
+    else if (cmd == "backward") backward();
+    else if (cmd == "stop") stopMotors();
+
+    else if (cmd == "left_on") left();
+    else if (cmd == "left_off") stopMotors();
+
+    else if (cmd == "right_on") right();
+    else if (cmd == "right_off") stopMotors();
+
+    server.send(200, "text/plain", "OK");
+}
+
+// ---------------- Mode Switch ----------------
+void handleModeSwitch() {
+    String mode = server.arg("mode");
+
+    if (mode == "auto") autoMode = true;
+    else if (mode == "manual") autoMode = false;
+
+    stopMotors();
+    server.sendHeader("Location", "/");
+    server.send(303);
+}</code></pre>
+                    </div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- JavaScript for Tab Switching -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Function to handle tab visibility and styling
+            window.showTab = (tabName) => {
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+                // Remove active class from all links
+                document.querySelectorAll('.tab-link').forEach(link => {
+                    link.classList.remove('accent-border', 'active-tab');
+                    link.classList.add('border-transparent');
+                });
+
+                // Show the selected tab content
+                const selectedContent = document.getElementById(tabName + '-content');
+                if (selectedContent) {
+                    selectedContent.classList.remove('hidden');
+                }
+
+                // Apply active styling to the selected link
+                const selectedLink = document.getElementById('tab-' + tabName + '-link');
+                if (selectedLink) {
+                    selectedLink.classList.add('accent-border', 'active-tab');
+                    selectedLink.classList.remove('border-transparent');
+                }
+            };
+
+            // Set the default tab to 'components' on page load
+            showTab('components');
+        });
+    </script>
+
+</body>
+</html>
