@@ -21,8 +21,8 @@
             /* Deep Navy Background */
             background-color: #0A192F; 
             color: #CCD6F6; /* Light Text */
-            height: 100vh; /* Enforce full viewport height */
-            overflow: hidden; /* Prevent main page scroll */
+            min-height: 100vh; /* Use min-height to ensure full coverage and allow mobile scrolling */
+            /* Removed height: 100vh and overflow: hidden to fix mobile scroll issue */
         }
         /* Custom configuration for Tailwind colors */
         .panel-bg {
@@ -42,7 +42,6 @@
             border-radius: 0.5rem;
             overflow-x: auto;
             overflow-y: auto; /* Internal vertical scrolling */
-            /* max-height is managed by flex-grow in the container */
         }
         .active-tab {
             border-bottom-width: 2px;
@@ -52,19 +51,24 @@
         .table-container {
             overflow-y: auto;
         }
+
+        /* Ensure main wrapper uses max height but allows overall page scroll if necessary */
+        .main-wrapper {
+            min-height: 95vh;
+        }
     </style>
 </head>
-<body class="h-screen overflow-hidden">
+<body class="min-h-screen">
 
-    <!-- Main Container: Uses h-full to fit screen. The p-4/lg:p-8 adds a nice border/margin. -->
-    <div class="p-4 lg:p-8 h-full">
-        <div class="flex flex-col lg:flex-row h-full max-w-6xl mx-auto rounded-xl shadow-2xl overflow-hidden panel-bg">
+    <!-- Main Container: Now uses min-h-screen and allows browser scroll if needed -->
+    <div class="p-4 lg:p-8 min-h-screen">
+        <div class="flex flex-col lg:flex-row h-full max-w-6xl mx-auto rounded-xl shadow-2xl overflow-hidden panel-bg main-wrapper">
             
             <!-- LEFT COLUMN: Media/Visual (Fixed to half the height on mobile, full height on desktop) -->
             <div class="w-full lg:w-2/5 panel-bg p-8 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-[#0A192F]/50 lg:h-full h-1/2 lg:h-auto">
                 <!-- Image of your robot model (img1) -->
                 <img 
-                    src="img.jpg" 
+                    src="uploaded:image_28d1bf.png-dad1fdbf-ceb3-40ac-8d44-d8510f7a111d" 
                     alt="Image of the Obstacle Avoidance Vehicle Model" 
                     class="w-full h-auto max-h-full rounded-lg shadow-xl object-contain"
                     onerror="this.onerror=null;this.src='https://placehold.co/600x400/102A43/89CFF0?text=Error:+Image+file+not+found';this.classList.add('p-10')"
